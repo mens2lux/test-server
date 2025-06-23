@@ -1,12 +1,32 @@
 from fastapi import FastAPI
 import uvicorn
+import sys
 
 app = FastAPI()
 
 
-@app.get("/")
+@app.get("/", response_class=HTMLResponse)
 async def root():
+    html_content = """
+    <html>
+        <head>
+            <title>Hello</title>
+        </head>
+        <body>
+            <h1>Hello world</h1>
+        </body>
+    </html>
+    """
+    return HTMLResponse(content=html_content, status_code=200)
+    
+
+@app.get("/json")
+async def json():
     return {"message": "Hello World"}
 
 if __name__ == "__main__":
-    uvicorn.run(app, host="0.0.0.0", port=9876)
+    try:
+        port=sys.argv[1]
+    except:
+        port=9876
+    uvicorn.run(app, host="0.0.0.0", port=port)
